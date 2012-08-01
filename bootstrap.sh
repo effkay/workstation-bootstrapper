@@ -24,7 +24,7 @@ function generate_ssh_key {
 }
 
 function preconditions_satisfied {
-    if gcc_installed || xquartz_installed
+    if gcc_installed && xquartz_installed
     then
       return 0
     else
@@ -33,13 +33,22 @@ function preconditions_satisfied {
 }
 
 function gcc_installed {
-    `which gcc`
+    # TODO: how to silence this?
+    if which gcc
+    then
+        return 0
+    else
+    echo '--> Xcode and CLI tools missing!' 
+        return 1
+    fi
 }
 
 function xquartz_installed {
     # This might not be the safest check, but for now it works:
-    if [ which xload ]
+    if which xload
     then
+        return 0
+    else
         echo '--> Xquartz required, opening download page'
         open http://xquartz.macosforge.org/landing/
         return 1
@@ -87,8 +96,7 @@ function install_rvm {
 }
 
 function abort {
-    echo "--> aborting since preconditions are not satisfied. Make sure you
-    have X-Code and it's CLI Tools installed, as well as X11!"
+    echo "--> aborting since preconditions are not satisfied"
 }
 
 function setup_workstation {
