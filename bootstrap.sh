@@ -4,7 +4,8 @@
 ## Copyright (C) 2012 Felipe Kaufmann. For License, see LICENSE File
 
 function ssh_id_exists {
-    if [ -f ~/.ssh/id_rsa.pub ]; then
+    if [ -f ~/.ssh/id_rsa.pub ]
+    then
         echo '--> ssh ID exists!'
 
         echo '--> chmodding ssh ID just to be sure'
@@ -32,7 +33,8 @@ function gcc_installed {
 
 function xquartz_installed {
     # This might not be the safest check, but for now it works:
-    if [ which xload ]; then
+    if [ which xload ]
+    then
         echo '--> Xquartz required, opening download page'
         open http://xquartz.macosforge.org/landing/
         return 1
@@ -89,12 +91,14 @@ function setup_workstation {
     install_homebrew
     install_rvm
 
-    if dotfiles_present; then
+    if dotfiles_present
+    then
         install_dotfiles
     fi
 }
 
-if preconditions_satisfied; then
+if preconditions_satisfied
+then
     setup_workstation
 else
     abort
