@@ -1,12 +1,21 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 #############################################################################
-# INSTALLER SCRIPT FOR WORKSTATIONS
+## INSTALLER SCRIPT FOR WORKSTATIONS
+## Copyright (C) 2012 Felipe Kaufmann. For License, see LICENSE File
+## Usage: myscript [options]
+##
+## Options:
+##   -d <clone-url>          Installs the specified dotfiles. In order for
+##                           this to work, the dotfiles repository must
+##                           contain an executable file named install in the
+##                           toplevel that handles installation of your
+##                           dotfiles to the right location.
+##
 #############################################################################
 
 function ssh_id_exists {
-    if [ -f ~/.ssh/id_rsa.pub ]
-    then
+    if [ -f ~/.ssh/id_rsa.pub ]; then
         echo '--> ssh ID exists!'
 
         echo '--> chmodding ssh ID just to be sure'
@@ -28,11 +37,10 @@ function preconditions_satisfied {
     gcc_path=`which gcc`
 
     # This might not be the safest check, but for now it works:
-    if [ which xload ]
-    then
-      echo '--> Xquartz required, opening download page'
-      open http://xquartz.macosforge.org/landing/
-      return 1
+    if [ which xload ]; then
+        echo '--> Xquartz required, opening download page'
+        open http://xquartz.macosforge.org/landing/
+        return 1
     fi
 }
 
@@ -61,9 +69,25 @@ function install_homebrew {
     brew install apple-gcc42
 }
 
+function dotfiles_provided {
+    if $1 == '-d'; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function install_dotfiles {
+    echo "--> fetching dotfiles"
+    git clone $2 dotfiles
+    echo "--> running dotfiles installer"
+    cd dotfiles
+    ./install
+}
+
 function install_rvm {
-  echo "--> installing RVM"
-  curl -L https://get.rvm.io | bash -s stable
+    echo "--> installing RVM"
+    curl -L https://get.rvm.io | bash -s stable
 }
 
 function abort {
@@ -75,36 +99,15 @@ function setup_workstation {
     install_ssh_key
     install_homebrew
     install_rvm
-    # install dotfiles, run puppet to install homebrew packages?
-    # dropbox, 1password
-    # mac-app store apps, other apps?
-    # * set zsh as default shell
+
+    if dotfiles_provided; then
+        install_dotfiles
+    fi
 }
 
-#############################################################################
-
-if preconditions_satisfied
-then
+if preconditions_satisfied; then
     setup_workstation
 else
     abort
 fi
 
-#############################################################################
-# TODO:
-# * ssh key? Provide location?
-# * puppet stuff
-# * import dotfiles from config repository
-
-# From thoughtbot:
-
-  # homebrew path tuning
-  # rvm path tuning
-
-      ### DO THIS TROUGH PUPPET:
-      #echo "Put Homebrew location earlier in PATH ..."
-        #echo "
-      ## recommended by brew doctor
-      #export PATH='/usr/local/bin:$PATH'" >> ~/.zshrc
-
-        #source ~/.zshrc
