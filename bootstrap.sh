@@ -24,7 +24,12 @@ function generate_ssh_key {
 }
 
 function preconditions_satisfied {
-    gcc_installed || xquartz_installed
+    if gcc_installed || xquartz_installed
+    then
+      return 0
+    else
+      return 1
+    fi
 }
 
 function gcc_installed {
