@@ -3,7 +3,20 @@ workstation-bootstrapper
 
 Setting up a new machine is a PTA. This makes it easier.
 
-Inspired by and with snippets from:
+The script itself installs only the basics like homebrew and rvm.
+However, a dotfiles repository can be provided that can be automatically
+installed
+
+## Usage
+
+`curl -L https://raw.github.com/effkay/workstation-bootstrapper/master/bootstrap.sh | bash`
+
+Or if you have a dotfiles repo with install script (see [mine](https://github.com/effkay/dotfiles) for
+reference):
+
+`curl -L https://raw.github.com/effkay/workstation-bootstrapper/master/bootstrap.sh | bash -s -d https://your-dotfiles.com`
+
+## Inspired by and with snippets from:
 
 - puppet-workstation: https://github.com/effkay/puppet-workstation
 
