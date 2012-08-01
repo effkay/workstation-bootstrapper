@@ -70,6 +70,7 @@ function install_ssh_key {
 
 function install_homebrew {
     echo '--> installing homebrew and a few packages'
+    sudo mkdir /usr/local
     sudo chown -R `whoami` /usr/local
     /usr/bin/ruby -e "$(/usr/bin/curl -fksSL https://raw.github.com/mxcl/homebrew/master/Library/Contributions/install_homebrew.rb)"
     brew update
@@ -81,7 +82,7 @@ function install_homebrew {
 }
 
 function dotfiles_present {
-    [ -f ~/dotfiles ]
+    [ -d ~/dotfiles ]
 }
 
 function install_dotfiles {
