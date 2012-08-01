@@ -1,18 +1,7 @@
 #!/usr/bin/env bash
 
-#############################################################################
 ## INSTALLER SCRIPT FOR WORKSTATIONS
 ## Copyright (C) 2012 Felipe Kaufmann. For License, see LICENSE File
-## Usage: myscript [options]
-##
-## Options:
-##   -d <clone-url>          Installs the specified dotfiles. In order for
-##                           this to work, the dotfiles repository must
-##                           contain an executable file named install in the
-##                           toplevel that handles installation of your
-##                           dotfiles to the right location.
-##
-#############################################################################
 
 function ssh_id_exists {
     if [ -f ~/.ssh/id_rsa.pub ]; then
@@ -34,8 +23,14 @@ function generate_ssh_key {
 }
 
 function preconditions_satisfied {
-    gcc_path=`which gcc`
+    gcc_installed || xquartz_installed
+}
 
+function gcc_installed {
+    `which gcc`
+}
+
+function xquartz_installed {
     # This might not be the safest check, but for now it works:
     if [ which xload ]; then
         echo '--> Xquartz required, opening download page'
@@ -69,17 +64,11 @@ function install_homebrew {
     brew install apple-gcc42
 }
 
-function dotfiles_provided {
-    if $1 == '-d'; then
-        return 0
-    else
-        return 1
-    fi
+function dotfiles_present {
+    [ -f ~/dotfiles ]
 }
 
 function install_dotfiles {
-    echo "--> fetching dotfiles"
-    git clone $2 dotfiles
     echo "--> running dotfiles installer"
     cd dotfiles
     ./install
@@ -100,7 +89,7 @@ function setup_workstation {
     install_homebrew
     install_rvm
 
-    if dotfiles_provided; then
+    if dotfiles_present; then
         install_dotfiles
     fi
 }
